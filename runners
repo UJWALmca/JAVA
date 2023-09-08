@@ -1,0 +1,13 @@
+
+package runner;
+
+abstract class Man{
+ abstract void breathe(){}
+}
+
+class runners extends Man{
+	
+
+void breathe(){
+System.out.println(" person is running");
+}}
