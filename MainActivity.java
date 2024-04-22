@@ -1,91 +1,78 @@
-package com.example.mapp2;
+package com.exam.lab01;
 
-
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.widget.CalendarView;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.Switch;
+
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
+    // widgets declaration
+    ImageButton imgBtn;
+    Switch btnStateSwitch;
+    ConstraintLayout innerClayout;
 
-     Button buttonHappy;
-
-    Button buttonangry;
-    Button buttonsad;
-
-    Button buttonlovely;
-        Button buttoncrazy;
-    Button buttonfunny;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        buttonHappy = findViewById(R.id.buttonHappy);
-        buttonangry=findViewById(R.id.buttonangry);
-        buttonfunny = findViewById(R.id.buttonfunny);
-      buttonsad = findViewById(R.id.buttonsad);
-        buttoncrazy = findViewById(R.id.buttoncrazy);
-       buttonlovely = findViewById(R.id.buttonlovely);
-//
-//
-//
-        buttonlovely.setOnClickListener(new View.OnClickListener() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_layout), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        // typecast widgets
+        imgBtn = (ImageButton) findViewById(R.id.img_btn);
+        btnStateSwitch = (Switch) findViewById(R.id.btn_state_switch);
+        innerClayout = (ConstraintLayout) findViewById(R.id.inner_clayout);
+
+        btnStateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
-            public void onClick(View v) {
-                navigateToGifActivity("lovely");
+            public void onCheckedChanged(CompoundButton cBtn, boolean isChecked){
+                if(isChecked){
+                    imgBtn.setEnabled(true);
+                    btnStateSwitch.setText("Enabled");
+                }
+                else{
+                    imgBtn.setEnabled(false);
+                    btnStateSwitch.setText("Disabled");
+                }
+
+                /* set the onClick behaviour of the ImageButton */
+                imgBtn.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        Snackbar.make(v, "Button Clicked", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+
+                // create a new view for calendar view
+                CalendarView calendarView = new CalendarView(getApplicationContext());
+
+                // create an objects of Layout parameters
+                ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                );
+
+                innerClayout.addView(calendarView, layoutParams);
             }
         });
 
-        buttoncrazy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToGifActivity("crazy");
-            }
-        });
-
-        buttonfunny.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToGifActivity("funny");
-            }
-        });
-//
-
-
-        buttonsad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToGifActivity("sad");
-
-            }
-        });
-
-        buttonangry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToGifActivity("angry");
-
-            }
-        });
-
-        buttonHappy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to the GifActivity passing the mood
-                navigateToGifActivity("happy");
-            }
-        });
-
-
-    }
-
-    private void navigateToGifActivity(String mood) {
-        Intent intent = new Intent(this, GifActivity.class);
-        intent.putExtra("mood", mood);
-        startActivity(intent);
     }
 }
